@@ -37,5 +37,9 @@ export const routes: Routes = [
     path: 'comments',
     component: CommentsComponent,
   },
+  {
+    path: 'comments/:attractionId',
+    component: CommentsComponent,
+  },
   { path: '', redirectTo: '/accueil', pathMatch: 'full' },
 ];

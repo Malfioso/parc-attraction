@@ -1,0 +1,39 @@
+.comments-container {
+  padding: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.comment-form {
+  margin-bottom: 2rem;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.comment-card {
+  margin-bottom: 1rem;
+
+  .comment-text {
+    padding: 1rem 0;
+    white-space: pre-wrap;
+  }
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+textarea {
+  min-height: 100px;
+}

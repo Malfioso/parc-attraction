@@ -1,1 +1,61 @@
-<p>comments works!</p>
+<div class="comments-container">
+  <!-- Add new comment form -->
+  <mat-card class="comment-form">
+    <mat-card-header>
+      <mat-card-title>Add Your Review</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form (ngSubmit)="submitCritique()">
+        <mat-form-field appearance="fill">
+          <mat-label>Rating (0-5)</mat-label>
+          <input
+            matInput
+            type="number"
+            min="0"
+            max="5"
+            [(ngModel)]="newCritique.note"
+            name="note"
+            required
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Your comment</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="newCritique.commentaire"
+            name="commentaire"
+            required
+            placeholder="Share your experience..."
+          ></textarea>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit">
+          Post Comment
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Display existing comments -->
+  <div class="comments-list">
+    <mat-card *ngFor="let critique of critiques | async" class="comment-card">
+      <mat-card-header>
+        <mat-card-title>Rating: {{ critique[1] }}/5</mat-card-title>
+        <!-- Index 1 for note -->
+        <mat-card-subtitle>
+          Comment by: User {{ critique[4] }}
+          <!-- Index 4 for users_id -->
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p class="comment-text">{{ critique[2] }}</p>
+        <!-- Index 2 for commentaire -->
+      </mat-card-content>
+      <mat-card-footer class="comment-footer">
+        <small>Attraction ID: {{ critique[3] }}</small>
+        <!-- Index 3 for attraction_id -->
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</div>

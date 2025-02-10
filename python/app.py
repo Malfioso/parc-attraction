@@ -4,6 +4,8 @@ from flask_cors import CORS
 import request.request as req
 import controller.auth.auth as user
 import controller.attraction as attraction
+import controller.comments as comments  # You'll need to create this controller
+
 
 app = Flask(__name__)
 CORS(app)
@@ -67,3 +69,43 @@ def login():
 
     result = jsonify({"token": user.encode_auth_token(list(records[0])[0]), "name": json['name']})
     return result, 200
+
+# Comments routes
+@app.post('/critique')
+def addCritique():
+    # Fonction vérif token
+    checkToken = user.check_token(request)
+    if (checkToken != True):
+        return checkToken
+
+    json = request.get_json()
+    retour = comments.add_critique(json)
+    if (retour):
+        return jsonify({"message": "Commentaire ajouté.", "result": retour}), 200
+    return jsonify({"message": "Erreur lors de l'ajout du commentaire.", "result": retour}), 500
+
+@app.get('/critique')
+def getAllCritiques():
+    result = comments.get_all_critiques()
+    return result, 200
+
+@app.get('/critique/attraction/<int:attraction_id>')
+def getCritiquesByAttraction(attraction_id):
+    result = comments.get_critiques_by_attraction(attraction_id)
+    return result, 200
+
+@app.get('/critique/<int:index>')
+def getCritique(index):
+    result = comments.get_critique(index)
+    return result, 200
+
+@app.delete('/critique/<int:index>')
+def deleteCritique(index):
+    # Fonction vérif token
+    checkToken = user.check_token(request)
+    if (checkToken != True):
+        return checkToken
+    
+    if (comments.delete_critique(index)):
+        return "Commentaire supprimé.", 200
+    return jsonify({"message": "Erreur lors de la suppression du commentaire."}), 500
