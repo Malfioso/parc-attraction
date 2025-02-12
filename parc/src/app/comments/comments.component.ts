@@ -50,16 +50,22 @@ export class CommentsComponent implements OnInit {
     this.route.params.subscribe((params) => {
       if (params['attractionId']) {
         this.attractionId = +params['attractionId'];
-        this.critiques = this.critiqueService.getCritiquesByAttractionId(
-          this.attractionId
-        );
-        this.newCritique.attraction_id = this.attractionId;
+        this.fetchCritiques(); // Call the function to load comments
       }
     });
   }
 
+  fetchCritiques() {
+    if (this.attractionId) {
+      this.critiques = this.critiqueService.getCritiquesByAttractionId(
+        this.attractionId
+      );
+    } else {
+      this.critiques = this.critiqueService.getAllCritiques();
+    }
+  }
+
   submitCritique() {
-    // Validate data before sending
     if (
       !this.newCritique.note ||
       !this.newCritique.commentaire ||
@@ -71,17 +77,11 @@ export class CommentsComponent implements OnInit {
       return;
     }
 
-    // Ensure the attraction_id is set
     this.newCritique.attraction_id = this.attractionId;
-
-    // Ensure user_id is set (you might want to get this from your auth service)
-    this.newCritique.users_id = 1; // Replace with actual user ID from auth
-
-    console.log('Submitting critique:', this.newCritique);
+    this.newCritique.users_id = 1; // Replace with actual user ID
 
     this.critiqueService.postCritique(this.newCritique).subscribe({
-      next: (response) => {
-        console.log('Success response:', response);
+      next: () => {
         this.snackBar.open('Comment added successfully!', 'Close', {
           duration: 3000,
         });
@@ -92,26 +92,18 @@ export class CommentsComponent implements OnInit {
           note: 0,
           commentaire: '',
           attraction_id: this.attractionId || 0,
-          users_id: 1, // Replace with actual user ID
+          users_id: 1,
         };
 
         // Refresh critiques list
-        if (this.attractionId) {
-          this.critiques = this.critiqueService.getCritiquesByAttractionId(
-            this.attractionId
-          );
-        } else {
-          this.critiques = this.critiqueService.getAllCritiques();
-        }
+        this.fetchCritiques();
       },
       error: (error) => {
         console.error('Error details:', error);
         this.snackBar.open(
           `Error adding comment: ${error.status} ${error.message}`,
           'Close',
-          {
-            duration: 3000,
-          }
+          { duration: 3000 }
         );
       },
     });

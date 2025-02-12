@@ -32,14 +32,27 @@ def get_all_critiques():
 def get_critiques_by_attraction(attraction_id):
     try:
         cur, conn = req.get_db_connection()
-        requete = "SELECT * FROM critiques WHERE attraction_id = %s;"
+        requete = "SELECT critique_id, note, commentaire, attraction_id, users_id FROM critiques WHERE attraction_id = %s;"
         cur.execute(requete, (attraction_id,))
         records = cur.fetchall()
         conn.close()
-        return jsonify(records)
+
+        # Format the response as a list of dictionaries
+        critiques = [
+            {
+                "critique_id": row[0],
+                "note": row[1],
+                "commentaire": row[2],
+                "attraction_id": row[3],
+                "users_id": row[4]
+            }
+            for row in records
+        ]
+        return jsonify(critiques)
     except Exception as e:
         print(e, flush=True)
         return jsonify([])
+
 
 def get_critique(index):
     try:
